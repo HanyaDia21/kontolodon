@@ -1,0 +1,197 @@
+jalan = false
+delayp = 160
+delayh = 220
+block = 4584
+hitcount = 4
+tile = 1
+
+function place(x,y)
+    pkt = {}
+    pkt.posX = GetLocal().posX
+    pkt.posY = GetLocal().posY
+    pkt.px = x;
+    pkt.py = y;
+    pkt.type = 3
+    pkt.value = block;
+    SendPacketRaw(false, pkt)
+    sleep(delayp)
+end
+
+function punch(x,y)
+    pkt = {}
+    pkt.posX = GetLocal().posX
+    pkt.posY = GetLocal().posY
+    pkt.px = x;
+    pkt.py = y;
+    pkt.type = 3;
+    pkt.value = 18
+    SendPacketRaw(false, pkt)
+    sleep(delayh)
+end
+
+function sendMessage(m)
+	SendPacket(2,'action|input\n|text|'..m)
+end
+
+function getArgs(str)
+local args = {}
+for i in str:gmatch('[^%s]+') do
+args[#args+1] = i
+end
+return args
+end
+
+function chat(vlist)
+if vlist[0]=="OnConsoleMessage" then
+pname__ = vlist[1]:match('<`.[^`]+'):sub(4)
+pcmd__ = vlist[1]:match('`$[^`]+'):sub(3)
+
+if pcmd__ and pcmd__:sub(1,1) == '!' then
+pcmd__ = getArgs(pcmd__:sub(2))
+
+if pcmd__[1] == 'stop' then
+jalan = false
+elseif pcmd__[1] == 'start' then
+jalan = true
+elseif pcmd__[1]=='delayplace' then
+					if not tonumber(pcmd__[2]) then
+						return sendMessage('`4ERROR: Please set a delay place!')
+					end
+					
+					delayp=tonumber(pcmd__[2])
+					sendMessage('`2Successfuly set delay to '..delayp)
+elseif pcmd__[1]=='delayhit' then
+					if not tonumber(pcmd__[2]) then
+						return sendMessage('`4ERROR: Please set a delay hit!')
+					end
+					
+					delayh=tonumber(pcmd__[2])
+					sendMessage('`2Successfuly set delay to '..delayh)
+elseif pcmd__[1]=='setid' then
+					if not tonumber(pcmd__[2]) then
+						return sendMessage('`4ERROR: Please set a id block')
+					end
+					
+					block=tonumber(pcmd__[2])
+					sendMessage('`2Successfuly set a block id '..block)
+elseif pcmd__[1]=='sethit' then
+					if not tonumber(pcmd__[2]) then
+						return sendMessage('`4ERROR: Please set a hit block')
+					end
+					
+					hitcount=tonumber(pcmd__[2])
+					sendMessage('`2Successfuly set a hit block '..hitcount)
+elseif pcmd__[1]=='settile' then
+					if not tonumber(pcmd__[2]) then
+						return sendMessage('`4ERROR: Please set a tile')
+					end
+					
+					tile=tonumber(pcmd__[2])
+					sendMessage('`2Successfuly set a tile '..tile)
+elseif pcmd__[1]=='helpsc' then
+console("`2!start `b(start script)")
+console("`2!stop `b(stop script)")
+console("`2!delayplace `b(set delay place block)")
+console("`2!delayhit `b(set delay hit block)")
+console("`2!sethit `b(set hit block)")
+console("`2!setid `b(set id break and place)")
+console("`2!settile `b(set tile break and place)")
+end
+end
+end
+end
+
+addHook(chat,"OnVarlist")
+
+function main()
+if jalan == true then
+
+if tile == 1 then
+place(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+end
+end
+
+if tile == 2 then
+place(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+end
+end
+
+if tile == 3 then
+place(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+end
+end
+
+if tile == 4 then
+place(math.floor(GetLocal().posX/32-2), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-2), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+end
+end
+
+if tile == 5 then
+place(math.floor(GetLocal().posX/32-2), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+place(math.floor(GetLocal().posX/32+2), math.floor(GetLocal().posY/32)-2)
+   for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-2), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32-1), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32+1), math.floor(GetLocal().posY/32)-2)
+end
+for i = 1, hitcount do
+punch(math.floor(GetLocal().posX/32+2), math.floor(GetLocal().posY/32)-2)
+end
+end
+end
+end
+
+function AvoidError()
+        if pcall(function()
+                                main()
+                        end) == false then
+                sleep(100)
+                AvoidError()
+        end
+        sleep(100)
+        AvoidError()
+end
+
+AvoidError()
